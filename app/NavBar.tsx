@@ -1,7 +1,13 @@
+"use client";
 import React from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { AiFillBug } from "react-icons/ai";
+import classnames from "classnames"; // package to apply conditional styling
+
 const NavBar = () => {
+  const currentPath = usePathname(); // To get the current path we are on
+  // console.log(currentPath);
   const links = [
     { label: "Dashboard", href: "/" },
     { label: "Issues", href: "/issues" },
@@ -16,7 +22,11 @@ const NavBar = () => {
           <Link
             key={link.href}
             href={link.href}
-            className="text-zinc-500 hover:text-zinc-800 transition-colors"
+            className={classnames({
+              "text-zinc-900": link.href === currentPath,
+              "text-zinc-500": link.href !== currentPath,
+              "hover:text-zinc-800 transition-colors": true,
+            })}
           >
             {link.label}
           </Link>
