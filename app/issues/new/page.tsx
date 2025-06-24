@@ -13,6 +13,7 @@ import { z } from "zod";
 import { createIssueSchema } from "@/app/validationSchemas";
 import ErrorMessage from "@/app/component/ErrorMessage"; // Importing the ErrorMessage component
 import Spinner from "@/app/component/Spinner";
+import { on } from "events";
 
 type IssueForm = z.infer<typeof createIssueSchema>; // Inferring the type from the Zod schema
 
@@ -28,6 +29,16 @@ const NewIssuePage = () => {
   });
   const [error, setError] = useState("");
   const [isSubmitting, setSubmitting] = useState(false);
+  const onSubmit = handleSubmit(async (data) => {
+    try {
+      setSubmitting(true);
+      await axios.post("/api/issues", data);
+      router.push("/issues"); // Redirect to the issues page after submission
+    } catch (error) {
+      setSubmitting(false);
+      setError("An unexpected error occurred while creating the issue.");
+    }
+  });
   return (
     <div className="max-w-xl">
       {error && (
@@ -35,19 +46,7 @@ const NewIssuePage = () => {
           <Callout.Text>{error}</Callout.Text>
         </Callout.Root>
       )}
-      <form
-        className=" space-y-3"
-        onSubmit={handleSubmit(async (data) => {
-          try {
-            setSubmitting(true);
-            await axios.post("/api/issues", data);
-            router.push("/issues"); // Redirect to the issues page after submission
-          } catch (error) {
-            setSubmitting(false);
-            setError("An unexpected error occurred while creating the issue.");
-          }
-        })}
-      >
+      <form className=" space-y-3" onSubmit={onSubmit}>
         <TextField.Root
           placeholder="Title"
           {...register("title")}
