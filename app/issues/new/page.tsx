@@ -2,7 +2,7 @@
 // This is a client component because it uses Radix UI components that require client-side rendering.
 import React from "react";
 import { TextField, Button, Callout, Text } from "@radix-ui/themes";
-import SimpleMDE from "react-simplemde-editor"; // A Markdown editor component
+import dynamic from "next/dynamic";
 import "easymde/dist/easymde.min.css"; // Import the CSS for SimpleMDE
 import { useForm, Controller } from "react-hook-form"; // Importing useForm for form handling
 import axios from "axios";
@@ -13,7 +13,10 @@ import { z } from "zod";
 import { createIssueSchema } from "@/app/validationSchemas";
 import ErrorMessage from "@/app/component/ErrorMessage"; // Importing the ErrorMessage component
 import Spinner from "@/app/component/Spinner";
-import { on } from "events";
+
+const SimpleMDE = dynamic(() => import("react-simplemde-editor"), {
+  ssr: false, // Disable server-side rendering for this component
+});
 
 type IssueForm = z.infer<typeof createIssueSchema>; // Inferring the type from the Zod schema
 
