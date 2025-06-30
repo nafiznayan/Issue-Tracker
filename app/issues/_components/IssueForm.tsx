@@ -1,23 +1,18 @@
 "use client";
 // This is a client component because it uses Radix UI components that require client-side rendering.
-import React from "react";
-import { TextField, Button, Callout, Text } from "@radix-ui/themes";
-import dynamic from "next/dynamic";
-import "easymde/dist/easymde.min.css"; // Import the CSS for SimpleMDE
-import { useForm, Controller } from "react-hook-form"; // Importing useForm for form handling
-import axios from "axios";
-import { useRouter } from "next/navigation";
-import { useState } from "react";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
-import { issueSchema } from "@/app/validationSchemas";
 import ErrorMessage from "@/app/component/ErrorMessage"; // Importing the ErrorMessage component
 import Spinner from "@/app/component/Spinner";
+import { issueSchema } from "@/app/validationSchemas";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { Issue } from "@prisma/client";
-
-const SimpleMDE = dynamic(() => import("react-simplemde-editor"), {
-  ssr: false, // Disable server-side rendering for this component
-});
+import { Button, Callout, TextField } from "@radix-ui/themes";
+import axios from "axios";
+import "easymde/dist/easymde.min.css"; // Import the CSS for SimpleMDE
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { Controller, useForm } from "react-hook-form"; // Importing useForm for form handling
+import SimpleMDE from "react-simplemde-editor"; // Importing SimpleMDE for Markdown input
+import { z } from "zod";
 
 type IssueFormData = z.infer<typeof issueSchema>; // Inferring the type from the Zod schema
 
