@@ -4,8 +4,8 @@ import { notFound } from "next/navigation";
 import EditIssueButton from "./EditIssueButton";
 import IssueDetails from "./IssueDetails";
 import DeleteIssueButton from "./DeleteIssueButton";
-import authOptions from "@/app/auth/authOptions";
 import { getServerSession } from "next-auth";
+import authOptions from "@/app/auth/authOptions";
 import AssigneeSelect from "./AssigneeSelect";
 
 interface Props {
@@ -13,12 +13,21 @@ interface Props {
 }
 
 const IssueDetailPage = async ({ params }: Props) => {
-  const session = await getServerSession(authOptions); // Ensure the user is authenticated
-  const issueId = (await params).id;
+  const session = await getServerSession(authOptions);
+  const resolvedParams = await params;
+  const issueId = resolvedParams.id;
+
+  // Validate that issueId is a valid number
+  const parsedId = parseInt(issueId);
+  if (isNaN(parsedId)) {
+    return notFound();
+  }
+
   const issue = await prisma.issue.findUnique({
-    where: { id: parseInt(issueId) },
+    where: { id: parsedId },
   });
-  if (!issue) return notFound(); // If the issue is not found, return a 404 page
+
+  if (!issue) return notFound();
 
   return (
     <Grid columns={{ initial: "1", sm: "5" }} gap="5">

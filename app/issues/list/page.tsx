@@ -3,8 +3,13 @@ import { Table } from "@radix-ui/themes";
 import { IssueStatusBadge, Link } from "@/app/component";
 import { prisma } from "@/prisma/client";
 import IssueActions from "./IssueActions";
+import { Status } from "@prisma/client";
 
-const IssuesPage = async () => {
+interface Props {
+  searchParams: { status: Status };
+}
+
+const IssuesPage = async ({ searchParams }: Props) => {
   const issues = await prisma.issue.findMany();
 
   return (
