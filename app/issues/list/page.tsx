@@ -10,7 +10,12 @@ interface Props {
 }
 
 const IssuesPage = async ({ searchParams }: Props) => {
-  const issues = await prisma.issue.findMany();
+  console.log("searchParams", searchParams.status);
+  const issues = await prisma.issue.findMany({
+    where: {
+      status: searchParams.status,
+    },
+  });
 
   return (
     <div>
