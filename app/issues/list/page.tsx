@@ -1,31 +1,33 @@
-import React from "react";
+import { Status } from "@prisma/client";
+import { prisma } from "@/prisma/client";
 import { Table } from "@radix-ui/themes";
 import { IssueStatusBadge, Link } from "@/app/component";
-import { prisma } from "@/prisma/client";
 import IssueActions from "./IssueActions";
-import { Status } from "@prisma/client";
 
+//Have to use Promise<{ status?: Status }> to ensure the searchParams are resolved correctly
 interface Props {
-  searchParams: { status: Status };
+  searchParams: Promise<{
+    status: Status;
+  }>;
 }
-
 const IssuesPage = async ({ searchParams }: Props) => {
-  console.log("searchParams", searchParams.status);
+  const resolvedSearchParams = await searchParams;
+  const statuses = Object.values(Status);
+  const status = statuses.includes(resolvedSearchParams.status)
+    ? resolvedSearchParams.status
+    : undefined; // Ensure status is valid or undefined
+
   const issues = await prisma.issue.findMany({
-    where: {
-      status: searchParams.status,
-    },
+    where: status ? { status } : {}, // filter only if status is passed
   });
 
   return (
     <div>
       <IssueActions />
-
       <Table.Root variant="surface">
         <Table.Header>
           <Table.Row>
             <Table.ColumnHeaderCell>Title</Table.ColumnHeaderCell>
-
             <Table.ColumnHeaderCell className="hidden md:table-cell">
               Status
             </Table.ColumnHeaderCell>
@@ -39,7 +41,6 @@ const IssuesPage = async ({ searchParams }: Props) => {
             <Table.Row key={issue.id}>
               <Table.Cell>
                 <Link href={`/issues/${issue.id}`}>{issue.title}</Link>
-
                 <div className="block md:hidden">
                   <IssueStatusBadge status={issue.status} />
                 </div>
@@ -50,11 +51,6 @@ const IssuesPage = async ({ searchParams }: Props) => {
               <Table.Cell className="hidden md:table-cell">
                 {issue.createdAt.toDateString()}
               </Table.Cell>
-              {/* <Table.Cell>
-                <Button variant="soft">
-                  <Link href={`/issues/${issue.id}`}>View</Link>
-                </Button>
-              </Table.Cell> */}
             </Table.Row>
           ))}
         </Table.Body>
@@ -63,6 +59,5 @@ const IssuesPage = async ({ searchParams }: Props) => {
   );
 };
 
-export const dynamic = "force-dynamic"; // Force dynamic rendering for this page
-
+export const dynamic = "force-dynamic"; // to ensure it's server-rendered every time
 export default IssuesPage;
