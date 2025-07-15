@@ -7,8 +7,8 @@ const statusMap: Record<
   { label: string; color: "red" | "violet" | "green" }
 > = {
   OPEN: { label: "OPEN", color: "red" },
-  CLOSED: { label: "CLOSED", color: "violet" },
-  IN_PROGRESS: { label: "IN_PROGRESS", color: "green" },
+  CLOSED: { label: "CLOSED", color: "green" },
+  IN_PROGRESS: { label: "IN_PROGRESS", color: "violet" },
 };
 
 const IssueStatusBadge = ({ status }: { status: Status }) => {
