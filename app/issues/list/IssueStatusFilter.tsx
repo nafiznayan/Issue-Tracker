@@ -20,7 +20,13 @@ const IssueStatusFilter = () => {
     <Select.Root
       value={currentStatus}
       onValueChange={(status) => {
-        const query = status === "ALL" ? "" : `?status=${status}`;
+        const params = new URLSearchParams();
+        if (status) params.append("status", status);
+        if (searchParams.get("orderBy")) {
+          params.append("orderBy", searchParams.get("orderBy")!);
+        }
+        const query = params.size ? `?${params.toString()}` : "";
+        // const query = status === "ALL" ? "" : `?status=${status}`;
         router.push("/issues/list" + query);
       }}
     >
