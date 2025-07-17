@@ -10,7 +10,11 @@ import { Metadata } from "next";
 interface Props {
   searchParams: Promise<IssueQueryParams>;
 }
-const IssuesPage = async ({ searchParams }: Props) => {
+const IssuesPage = async ({
+  searchParams,
+}: {
+  searchParams: IssueQueryParams;
+}) => {
   const resolvedSearchParams = await searchParams;
   const statuses = Object.values(Status);
   const status = statuses.includes(resolvedSearchParams.status)

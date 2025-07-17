@@ -20,13 +20,14 @@ const Pagination = ({ itemCount, pageSize, currentPage }: Props) => {
   const searchParams = useSearchParams();
 
   const pageCount = Math.ceil(itemCount / pageSize);
-  if (pageCount <= 1) return null; // No pagination needed if only one page
+  if (pageCount === 0) return null; // ✅ Only hide if no data
 
-  const changePage = (page: Number) => {
-    const params = new URLSearchParams(searchParams);
+  const changePage = (page: number) => {
+    const params = new URLSearchParams(searchParams.toString());
     params.set("page", page.toString());
     router.push(`?${params.toString()}`);
   };
+
   return (
     <Flex align="center" gap="2">
       <Text size="2">
