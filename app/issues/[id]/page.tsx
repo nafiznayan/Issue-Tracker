@@ -47,4 +47,28 @@ const IssueDetailPage = async ({ params }: Props) => {
   );
 };
 
+export async function generateMetadata({ params }: Props) {
+  const resolvedParams = await params;
+  const issueId = resolvedParams.id;
+
+  // Validate that issueId is a valid number
+  const parsedId = parseInt(issueId);
+  if (isNaN(parsedId)) {
+    return { title: "Issue Not Found" };
+  }
+
+  const issue = await prisma.issue.findUnique({
+    where: { id: parsedId },
+  });
+
+  if (!issue) {
+    return { title: "Issue Not Found" };
+  }
+
+  return {
+    title: issue?.title,
+    description: `Details of issue ${issue.id}`,
+  };
+}
+
 export default IssueDetailPage;
