@@ -13,11 +13,13 @@ export interface IssueQueryParams {
 }
 
 interface Props {
-  searchParams: IssueQueryParams; // ✅ FIXED
+  searchParams: Promise<IssueQueryParams>;
   issues: Issue[];
 }
 
-const IssueTable = ({ searchParams, issues }: Props) => {
+const IssueTable = async ({ searchParams, issues }: Props) => {
+  const resolvedSearchParams = await searchParams;
+
   return (
     <Table.Root variant="surface">
       <Table.Header>
@@ -29,12 +31,12 @@ const IssueTable = ({ searchParams, issues }: Props) => {
             >
               <NextLink
                 href={{
-                  query: { ...searchParams, orderBy: column.value },
+                  query: { ...resolvedSearchParams, orderBy: column.value },
                 }}
               >
                 {column.label}
               </NextLink>
-              {column.value === searchParams.orderBy && (
+              {column.value === resolvedSearchParams.orderBy && (
                 <ArrowUpIcon className="inline-flex" />
               )}
             </Table.ColumnHeaderCell>
@@ -62,7 +64,6 @@ const IssueTable = ({ searchParams, issues }: Props) => {
     </Table.Root>
   );
 };
-
 const columns: {
   label: string;
   value: keyof Issue;

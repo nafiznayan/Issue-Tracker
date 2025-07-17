@@ -10,11 +10,7 @@ import { Metadata } from "next";
 interface Props {
   searchParams: Promise<IssueQueryParams>;
 }
-const IssuesPage = async ({
-  searchParams,
-}: {
-  searchParams: IssueQueryParams;
-}) => {
+const IssuesPage = async ({ searchParams }: Props) => {
   const resolvedSearchParams = await searchParams;
   const statuses = Object.values(Status);
   const status = statuses.includes(resolvedSearchParams.status)
@@ -52,7 +48,7 @@ const IssuesPage = async ({
 
 export const metadata: Metadata = {
   title: "Issue Tracker - Issue List",
-  description: "View all project issues with pagination and filtering options.",
+  description: "View all project issues.",
 };
 
 export const dynamic = "force-dynamic"; // to ensure it's server-rendered every time
