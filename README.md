@@ -31,8 +31,8 @@ A full-stack Issue Tracker application built with Next.js, featuring Google OAut
 - Google OAuth credentials  
 
 1. Set up environment variables
-   Create a .env file and add your configuration:
-  ```bash
+
+   ```bash
    DATABASE_URL=your_database_url
    GOOGLE_CLIENT_ID=your_google_client_id
    GOOGLE_CLIENT_SECRET=your_google_client_secret
