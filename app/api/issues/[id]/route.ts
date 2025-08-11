@@ -9,7 +9,6 @@ export async function PATCH(
   { params }: { params: Promise<{ id: string }> }
 ) {
   const session = await getServerSession(authOptions);
-
   if (!session)
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
@@ -18,12 +17,12 @@ export async function PATCH(
   if (!validation.success)
     return NextResponse.json(validation.error.format(), { status: 400 });
 
-  const { assignedToUserId, title, description } = validation.data;
+  const { assignedToUserId, title, description, status } = validation.data;
+
   if (assignedToUserId) {
     const user = await prisma.user.findUnique({
       where: { id: assignedToUserId },
     });
-
     if (!user)
       return NextResponse.json(
         { error: "Invalid assigned user ID" },
@@ -32,8 +31,7 @@ export async function PATCH(
   }
 
   const id = parseInt((await params).id);
-  const issue = await prisma.issue.findUnique({ where: { id: id } });
-
+  const issue = await prisma.issue.findUnique({ where: { id } });
   if (!issue) {
     return NextResponse.json({ error: "Invalid Issue" }, { status: 404 });
   }
@@ -44,6 +42,7 @@ export async function PATCH(
       title,
       description,
       assignedToUserId,
+      status, // ✅ added status here
     },
   });
 
